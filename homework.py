@@ -1,5 +1,5 @@
 from dataclasses import dataclass, asdict
-from typing import Dict, List
+from typing import Dict, List, Type
 
 
 @dataclass
@@ -11,14 +11,14 @@ class InfoMessage:
     speed: float
     calories: float
 
-    Info: str = ('Тип тренировки: {training_type}; '
+    info: str = ('Тип тренировки: {training_type}; '
                  'Длительность: {duration:.3f} ч.; '
                  'Дистанция: {distance:.3f} км; '
                  'Ср. скорость: {speed:.3f} км/ч; '
                  'Потрачено ккал: {calories:.3f}.')
 
     def get_message(self) -> str:
-        return self.Info.format(**asdict(self))
+        return self.info.format(**asdict(self))
 
 
 class Training:
@@ -124,14 +124,14 @@ class Swimming(Training):
                 * self.weight * self.duration)
 
 
-def read_package(workout_type: str, data: List[int]) -> Training:
+def read_package(workout_type: str, data: List[float]) -> Training:
     """Прочитать данные полученные от датчиков."""
-    workout: Dict[str, type] = {'SWM': Swimming,
-                                'RUN': Running,
-                                'WLK': SportsWalking,
-                                }
-    if workout_type in workout.keys():
-        return workout[workout_type](*data)
+    workouts: Dict[str, Type[Training]] = {'SWM': Swimming,
+                                           'RUN': Running,
+                                           'WLK': SportsWalking,
+                                           }
+    if workout_type in workouts:
+        return workouts[workout_type](*data)
     raise KeyError('Неожиданное значение')
 
 
